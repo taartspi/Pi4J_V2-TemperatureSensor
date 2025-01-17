@@ -23,8 +23,6 @@ public class Pi4jTest {
 
 
 
-//  .flags(0b0000000000000000000000L)  not supported on Pi5
-               
         var spiConfig = Spi.newConfigBuilder(pi4JContext)
                 .id("SPI" + 0 + "CE  " +0)
                 .name("A/D converter")
@@ -35,8 +33,7 @@ public class Pi4jTest {
                 .readLsbFirst(0)
                 .writeLsbFirst(0)
                 .provider("linuxfs-spi")
-
-                .build();
+               .build();
         var spi = pi4JContext.create(spiConfig);
 
         final SpiReader spiReader = new SpiReader(spi);
@@ -68,7 +65,8 @@ public class Pi4jTest {
         public synchronized Object read(int channel) {
             byte[] rxBuffer = new byte[]{-1, -1, -1};
             ByteBuffer readBuffer = ByteBuffer.allocate(3);
-            spi.transfer(createWriteBuffer(channel), readBuffer, 4096);
+
+            spi.transfer(createWriteBuffer(channel), readBuffer, 3);
             logData(readBuffer.array());
             return readBuffer;
         }
