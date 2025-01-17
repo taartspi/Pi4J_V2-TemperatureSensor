@@ -1,3 +1,4 @@
+
 package com.pi4j.test.devices.dht22;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
@@ -27,11 +28,12 @@ public class Pi4jTest {
                 .name("A/D converter")
                 .bus(0)
                 .chipSelect(SpiChipSelect.CS_0)
-                .flags(0b0000000000000000000000L)
                 .baud(Spi.DEFAULT_BAUD)
                 .mode(SpiMode.MODE_0)
-                .provider("pigpio-spi")
-                .build();
+                .readLsbFirst(0)
+                .writeLsbFirst(0)
+                .provider("linuxfs-spi")
+               .build();
         var spi = pi4JContext.create(spiConfig);
 
         final SpiReader spiReader = new SpiReader(spi);
@@ -63,6 +65,7 @@ public class Pi4jTest {
         public synchronized Object read(int channel) {
             byte[] rxBuffer = new byte[]{-1, -1, -1};
             ByteBuffer readBuffer = ByteBuffer.allocate(3);
+
             spi.transfer(createWriteBuffer(channel), readBuffer, 3);
             logData(readBuffer.array());
             return readBuffer;
